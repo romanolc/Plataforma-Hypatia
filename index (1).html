@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" data-lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hypatia — IA de Mentoria em Programação</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/jpeg" href="logo.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== XP TOAST ===== -->
+  <div class="xp-toast hidden" id="xp-toast">
+    <span class="xp-toast-icon">⚡</span>
+    <span class="xp-toast-text" id="xp-toast-text">+25 XP</span>
+  </div>
+
+  <!-- ===== ONBOARDING MODAL ===== -->
+  <div id="onboarding-overlay" class="overlay-backdrop">
+    <div class="onboarding-modal" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+      <div class="onboarding-logo">
+        <img src="logo.jpeg" alt="Hypatia Logo" />
+      </div>
+      <h1 id="onboarding-title" data-i18n="onboarding_title">Bem-vindo à Hypatia</h1>
+      <p data-i18n="onboarding_subtitle">Sua mentora de IA para programação. Vamos personalizar sua experiência.</p>
+      <div class="form-group">
+        <label for="input-name" data-i18n="onboarding_name">Seu nome</label>
+        <input type="text" id="input-name" placeholder="Ex: Ana Silva" autocomplete="name" />
+      </div>
+      <div class="form-group">
+        <label for="input-email" data-i18n="onboarding_email">Seu e-mail</label>
+        <input type="email" id="input-email" placeholder="ana@email.com" autocomplete="email" />
+      </div>
+      <button class="btn-primary btn-full" id="btn-onboarding-start" data-i18n="onboarding_cta">Começar agora →</button>
+    </div>
+  </div>
+
+  <!-- ===== APP WRAPPER ===== -->
+  <div id="app" class="app-wrapper hidden">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div id="sidebar-overlay" class="sidebar-overlay hidden"></div>
+
+    <!-- ===== SIDEBAR (Desktop) ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="logo.jpeg" alt="Hypatia" class="logo-img" />
+          <span class="logo-text">Hypatia</span>
+        </div>
+        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 19l-7-7 7-7M18 19l-7-7 7-7"/></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" role="navigation" aria-label="Menu principal">
+        <ul>
+          <li>
+            <button class="nav-item active" data-page="dashboard" aria-label="Dashboard">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+              <span class="nav-label" data-i18n="nav_dashboard">Dashboard</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-page="learn" aria-label="Aprender">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
+              <span class="nav-label" data-i18n="nav_learn">Aprender</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-page="projects" aria-label="Projetos">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
+              <span class="nav-label" data-i18n="nav_projects">Projetos</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-page="chat" aria-label="Chat com IA">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+              <span class="nav-label" data-i18n="nav_chat">Chat IA</span>
+              <span class="nav-badge">IA</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-page="hackathons" aria-label="Hackathons">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+              <span class="nav-label" data-i18n="nav_hackathons">Hackathons</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-page="community" aria-label="Comunidade">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <span class="nav-label" data-i18n="nav_community">Comunidade</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar User Progress Card -->
+      <div class="sidebar-progress-card" id="sidebar-progress-card">
+        <div class="spc-header">
+          <div class="spc-avatar" id="spc-avatar">?</div>
+          <div class="spc-info">
+            <span class="spc-name" id="spc-name">Usuário</span>
+            <span class="spc-level" id="spc-level">Nível 1</span>
+          </div>
+        </div>
+        <div class="spc-xp-row">
+          <span class="spc-xp-label">XP</span>
+          <span class="spc-xp-value" id="spc-xp">0 / 500</span>
+        </div>
+        <div class="spc-xp-bar">
+          <div class="spc-xp-fill" id="spc-xp-fill" style="width: 0%"></div>
+        </div>
+        <div class="spc-streak">
+          <span class="spc-streak-fire">🔥</span>
+          <span class="spc-streak-text" id="spc-streak-text">7 dias seguidos</span>
+        </div>
+        <div class="spc-stats-row">
+          <div class="spc-stat"><span class="spc-stat-val" id="spc-lessons">24</span><span class="spc-stat-lbl">Aulas</span></div>
+          <div class="spc-stat"><span class="spc-stat-val" id="spc-projects-count">5</span><span class="spc-stat-lbl">Projetos</span></div>
+          <div class="spc-stat"><span class="spc-stat-val">3</span><span class="spc-stat-lbl">Hacks</span></div>
+        </div>
+        <button class="btn-continue-learning" id="btn-continue-learning" data-i18n="btn_continue">▶ Continuar Aprendendo</button>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="nav-item" data-page="settings" aria-label="Configurações">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
+          <span class="nav-label" data-i18n="nav_settings">Configurações</span>
+        </button>
+        <button class="nav-item" data-page="support" aria-label="Suporte">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+          <span class="nav-label" data-i18n="nav_support">Suporte</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-container">
+
+      <!-- ===== HEADER ===== -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2 class="page-title" id="page-title" data-i18n="nav_dashboard">Dashboard</h2>
+        </div>
+        <div class="header-right">
+          <button class="lang-toggle" id="lang-toggle" aria-label="Trocar idioma">
+            <span class="lang-flag" id="lang-flag">🇧🇷</span>
+            <span class="lang-text" id="lang-text">PT</span>
+          </button>
+          <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
+            <span class="theme-icon theme-icon-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+            <span class="theme-icon theme-icon-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></span>
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </button>
+          <div class="user-menu" id="user-menu">
+            <div class="user-avatar" id="user-avatar" aria-label="Menu do usuário">
+              <span id="avatar-initials">?</span>
+            </div>
+            <div class="user-info">
+              <span class="user-name" id="header-user-name">Usuário</span>
+              <span class="user-role" data-i18n="user_role">Desenvolvedor</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ===== PAGES ===== -->
+      <main class="page-content" id="page-content">
+
+        <!-- ── DASHBOARD ── -->
+        <section class="page" id="page-dashboard" data-page="dashboard">
+          <div class="dashboard-welcome">
+            <div class="welcome-text">
+              <h1 data-i18n="dashboard_hello">Olá,</h1>
+              <h1 class="welcome-name" id="welcome-name">Desenvolvedor</h1>
+              <p data-i18n="dashboard_subtitle">Pronto para evoluir hoje? Sua jornada de aprendizado continua.</p>
+            </div>
+            <div class="welcome-streak">
+              <div class="streak-badge">
+                <span class="streak-fire">🔥</span>
+                <div>
+                  <span class="streak-number">7</span>
+                  <span class="streak-label" data-i18n="streak_days">dias seguidos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-icon stat-icon-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+              <div class="stat-info"><span class="stat-value" id="stat-lessons">24</span><span class="stat-label" data-i18n="stat_lessons">Aulas concluídas</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon stat-icon-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+              <div class="stat-info"><span class="stat-value">89%</span><span class="stat-label" data-i18n="stat_progress">Progresso geral</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon stat-icon-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+              <div class="stat-info"><span class="stat-value">5</span><span class="stat-label" data-i18n="stat_projects">Projetos ativos</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon stat-icon-orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+              <div class="stat-info"><span class="stat-value" id="stat-xp">1250</span><span class="stat-label">XP Total</span></div>
+            </div>
+          </div>
+
+          <!-- XP Progress Bar -->
+          <div class="xp-progress-section">
+            <div class="xp-level-row">
+              <div class="xp-level-badge" id="xp-level-badge">Nível 3</div>
+              <div class="xp-progress-info">
+                <span class="xp-current" id="xp-current-display">1250 XP</span>
+                <span class="xp-separator">/</span>
+                <span class="xp-next">1500 XP</span>
+              </div>
+              <div class="xp-next-level">Nível 4 →</div>
+            </div>
+            <div class="xp-bar-full">
+              <div class="xp-bar-fill" id="xp-bar-fill" style="width: 83%"></div>
+            </div>
+          </div>
+
+          <!-- Feature Cards Grid -->
+          <div class="cards-section">
+            <h3 class="section-title" data-i18n="section_explore">Explorar</h3>
+            <div class="feature-cards-grid">
+              <div class="feature-card card-learn" data-page-target="learn" tabindex="0" role="button">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+                <div class="card-content">
+                  <h4 data-i18n="card_learn_title">Aprender</h4>
+                  <p data-i18n="card_learn_desc">Trilhas de aprendizado personalizadas com IA adaptativa para seu nível.</p>
+                  <div class="card-progress"><div class="progress-bar"><div class="progress-fill" style="width: 68%"></div></div><span>68%</span></div>
+                </div>
+                <div class="card-arrow">→</div>
+              </div>
+              <div class="feature-card card-projects" data-page-target="projects" tabindex="0" role="button">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+                <div class="card-content">
+                  <h4 data-i18n="card_projects_title">Projetos</h4>
+                  <p data-i18n="card_projects_desc">Construa projetos reais guiados pela Hypatia com feedback em tempo real.</p>
+                  <div class="card-tags"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">+3</span></div>
+                </div>
+                <div class="card-arrow">→</div>
+              </div>
+              <div class="feature-card card-chat" data-page-target="chat" tabindex="0" role="button">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+                <div class="card-content">
+                  <h4 data-i18n="card_chat_title">Chat com IA</h4>
+                  <p data-i18n="card_chat_desc">Converse com a Hypatia sobre qualquer dúvida de programação, 24/7.</p>
+                  <div class="card-status"><span class="status-dot"></span><span data-i18n="chat_online">Online agora</span></div>
+                </div>
+                <div class="card-arrow">→</div>
+              </div>
+              <div class="feature-card card-hackathons" data-page-target="hackathons" tabindex="0" role="button">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+                <div class="card-content">
+                  <h4 data-i18n="card_hackathons_title">Hackathons</h4>
+                  <p data-i18n="card_hackathons_desc">Participe de desafios reais e acelere sua carreira como dev.</p>
+                  <div class="card-tags"><span class="tag tag-live">🔴 Ao Vivo</span><span class="tag">Salvador-BA</span></div>
+                </div>
+                <div class="card-arrow">→</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="recent-section">
+            <h3 class="section-title" data-i18n="section_recent">Atividade Recente</h3>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-icon ai-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>
+                <div class="activity-info"><span class="activity-title">Aula: Introdução ao React Hooks</span><span class="activity-time">Hoje, 14:30</span></div>
+                <span class="activity-xp">+25 XP</span>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon ai-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+                <div class="activity-info"><span class="activity-title">Chat com Hypatia — APIs REST</span><span class="activity-time">Hoje, 11:15</span></div>
+                <span class="activity-xp">+10 XP</span>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon ai-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+                <div class="activity-info"><span class="activity-title">Projeto: Dashboard Analytics iniciado</span><span class="activity-time">Ontem, 16:00</span></div>
+                <span class="activity-xp">+50 XP</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── APRENDER ── -->
+        <section class="page hidden" id="page-learn" data-page="learn">
+          <div class="page-header-inner">
+            <div>
+              <h2 data-i18n="nav_learn">Aprender</h2>
+              <p data-i18n="learn_subtitle">Trilhas completas de Front-end e Back-end com IA adaptativa.</p>
+            </div>
+          </div>
+
+          <div class="learn-filters">
+            <button class="filter-btn active" data-filter="all" data-i18n="filter_all">Todos</button>
+            <button class="filter-btn" data-filter="frontend" data-i18n="filter_frontend">Front-end</button>
+            <button class="filter-btn" data-filter="backend" data-i18n="filter_backend">Back-end</button>
+            <button class="filter-btn" data-filter="devops">DevOps</button>
+          </div>
+
+          <div class="courses-section">
+            <h3 class="section-title">Front-end</h3>
+            <div class="courses-grid">
+              <div class="course-card" data-course="html" data-category="frontend">
+                <div class="course-thumb course-thumb-html"><span>HTML</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Front-end</span><span class="course-difficulty diff-beginner">Iniciante</span></div>
+                  <h4 class="course-title">HTML Fundamentals</h4>
+                  <p class="course-desc">Estrutura semântica, formulários, acessibilidade e boas práticas modernas.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 4h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 100%"></div></div><span>100%</span></div>
+                  </div>
+                  <button class="btn-course btn-completed" data-i18n="btn_completed">✓ Concluído</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="css" data-category="frontend">
+                <div class="course-thumb course-thumb-css"><span>CSS</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Front-end</span><span class="course-difficulty diff-beginner">Iniciante</span></div>
+                  <h4 class="course-title">CSS Avançado & Design</h4>
+                  <p class="course-desc">Flexbox, Grid, animações, variáveis CSS e design responsivo profissional.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 6h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 78%"></div></div><span>78%</span></div>
+                  </div>
+                  <button class="btn-course btn-continue" data-course-id="css" data-i18n="btn_continue_course">Continuar →</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="js" data-category="frontend">
+                <div class="course-thumb course-thumb-js"><span>JS</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Front-end</span><span class="course-difficulty diff-intermediate">Intermediário</span></div>
+                  <h4 class="course-title">JavaScript Moderno</h4>
+                  <p class="course-desc">ES6+, async/await, Promises, DOM manipulation e padrões de projeto.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 12h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 45%"></div></div><span>45%</span></div>
+                  </div>
+                  <button class="btn-course btn-continue" data-course-id="js" data-i18n="btn_continue_course">Continuar →</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="react" data-category="frontend">
+                <div class="course-thumb course-thumb-react"><span>React</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Front-end</span><span class="course-difficulty diff-intermediate">Intermediário</span></div>
+                  <h4 class="course-title">React & Hooks</h4>
+                  <p class="course-desc">Componentes, estado, Context API, hooks customizados e performance.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 15h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 20%"></div></div><span>20%</span></div>
+                  </div>
+                  <button class="btn-course btn-continue" data-course-id="react" data-i18n="btn_continue_course">Continuar →</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="nextjs" data-category="frontend">
+                <div class="course-thumb course-thumb-next"><span>Next</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Front-end</span><span class="course-difficulty diff-advanced">Avançado</span></div>
+                  <h4 class="course-title">Next.js Full Stack</h4>
+                  <p class="course-desc">SSR, SSG, App Router, API Routes e deploy na Vercel.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 18h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 0%"></div></div><span>0%</span></div>
+                  </div>
+                  <button class="btn-course btn-start" data-course-id="nextjs">Começar →</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="tailwind" data-category="frontend">
+                <div class="course-thumb course-thumb-tailwind"><span>Tailwind</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Front-end</span><span class="course-difficulty diff-beginner">Iniciante</span></div>
+                  <h4 class="course-title">Tailwind CSS</h4>
+                  <p class="course-desc">Utility-first CSS, design system, componentes e temas customizados.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 5h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 0%"></div></div><span>0%</span></div>
+                  </div>
+                  <button class="btn-course btn-start" data-course-id="tailwind">Começar →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="courses-section">
+            <h3 class="section-title">Back-end</h3>
+            <div class="courses-grid">
+              <div class="course-card" data-course="nodejs" data-category="backend">
+                <div class="course-thumb course-thumb-node"><span>Node</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Back-end</span><span class="course-difficulty diff-intermediate">Intermediário</span></div>
+                  <h4 class="course-title">Node.js & Express</h4>
+                  <p class="course-desc">Servidores HTTP, middleware, autenticação JWT e arquitetura REST.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 14h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 35%"></div></div><span>35%</span></div>
+                  </div>
+                  <button class="btn-course btn-continue" data-course-id="nodejs">Continuar →</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="python" data-category="backend">
+                <div class="course-thumb course-thumb-python"><span>Python</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Back-end</span><span class="course-difficulty diff-beginner">Iniciante</span></div>
+                  <h4 class="course-title">Python para Devs</h4>
+                  <p class="course-desc">Sintaxe, POO, APIs com FastAPI, automação e scripts profissionais.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 10h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 0%"></div></div><span>0%</span></div>
+                  </div>
+                  <button class="btn-course btn-start" data-course-id="python">Começar →</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="database" data-category="backend">
+                <div class="course-thumb course-thumb-db"><span>DB</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">Back-end</span><span class="course-difficulty diff-intermediate">Intermediário</span></div>
+                  <h4 class="course-title">Banco de Dados</h4>
+                  <p class="course-desc">SQL, PostgreSQL, MongoDB, modelagem de dados e queries avançadas.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 8h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 0%"></div></div><span>0%</span></div>
+                  </div>
+                  <button class="btn-course btn-start" data-course-id="database">Começar →</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="docker" data-category="devops">
+                <div class="course-thumb course-thumb-docker"><span>Docker</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">DevOps</span><span class="course-difficulty diff-advanced">Avançado</span></div>
+                  <h4 class="course-title">Docker & Containers</h4>
+                  <p class="course-desc">Containerização, Docker Compose, CI/CD e deploy em produção.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 7h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 0%"></div></div><span>0%</span></div>
+                  </div>
+                  <button class="btn-course btn-start" data-course-id="docker">Começar →</button>
+                </div>
+              </div>
+              <div class="course-card" data-course="git" data-category="devops">
+                <div class="course-thumb course-thumb-git"><span>Git</span></div>
+                <div class="course-body">
+                  <div class="course-meta-row"><span class="course-category">DevOps</span><span class="course-difficulty diff-beginner">Iniciante</span></div>
+                  <h4 class="course-title">Git & GitHub</h4>
+                  <p class="course-desc">Controle de versão, branches, pull requests e fluxo de trabalho em equipe.</p>
+                  <div class="course-footer">
+                    <span class="course-time">⏱ 4h</span>
+                    <div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width: 60%"></div></div><span>60%</span></div>
+                  </div>
+                  <button class="btn-course btn-continue" data-course-id="git">Continuar →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── MODAL AULA ── -->
+        <div class="modal-overlay hidden" id="lesson-modal">
+          <div class="lesson-modal">
+            <div class="lesson-sidebar">
+              <div class="lesson-sidebar-header">
+                <img src="logo.jpeg" alt="Hypatia" class="lesson-logo" />
+                <span>Hypatia</span>
+              </div>
+              <div class="lesson-modules" id="lesson-modules"></div>
+            </div>
+            <div class="lesson-main">
+              <div class="lesson-topbar">
+                <div class="lesson-breadcrumb" id="lesson-breadcrumb">Curso / Módulo</div>
+                <div class="lesson-progress-bar-wrap">
+                  <div class="lesson-progress-bar"><div class="lesson-progress-fill" id="lesson-progress-fill" style="width: 0%"></div></div>
+                  <span id="lesson-progress-text">0%</span>
+                </div>
+                <button class="lesson-close-btn" id="lesson-close-btn">✕ Fechar</button>
+              </div>
+              <div class="lesson-content" id="lesson-content">
+                <div class="lesson-video-area">
+                  <div class="lesson-player">
+                    <div class="player-overlay">
+                      <button class="player-play-btn" id="player-play-btn">▶</button>
+                      <span class="player-label" id="player-label">Assistir Aula</span>
+                    </div>
+                    <div class="player-bar">
+                      <div class="player-bar-fill" id="player-bar-fill"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="lesson-body">
+                  <h2 id="lesson-title">Título da Aula</h2>
+                  <p id="lesson-description">Descrição da aula aparece aqui.</p>
+                  <div class="lesson-code-area">
+                    <div class="code-header"><span class="code-lang" id="code-lang">javascript</span><button class="code-copy-btn" id="code-copy-btn">Copiar</button></div>
+                    <pre class="code-block" id="lesson-code"></pre>
+                  </div>
+                  <div class="lesson-checklist" id="lesson-checklist"></div>
+                  <div class="lesson-exercise" id="lesson-exercise"></div>
+                  <button class="btn-primary btn-complete-lesson" id="btn-complete-lesson">✓ Concluir Aula (+25 XP)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PROJETOS ── -->
+        <section class="page hidden" id="page-projects" data-page="projects">
+          <div class="page-header-inner">
+            <div>
+              <h2 data-i18n="nav_projects">Projetos</h2>
+              <p data-i18n="projects_subtitle">Seus projetos reais com código, estrutura e preview.</p>
+            </div>
+            <button class="btn-primary" id="btn-new-project" data-i18n="btn_new_project">+ Novo Projeto</button>
+          </div>
+          <div class="projects-grid" id="projects-grid">
+            <!-- Gerado via JS -->
+          </div>
+        </section>
+
+        <!-- ── MODAL NOVO PROJETO ── -->
+        <div class="modal-overlay hidden" id="new-project-modal">
+          <div class="modal-card modal-project-form">
+            <div class="modal-header">
+              <h3>Novo Projeto</h3>
+              <button class="modal-close" id="close-new-project-modal">✕</button>
+            </div>
+            <div class="modal-body">
+              <div class="form-row-2">
+                <div class="form-group"><label>Título do Projeto</label><input type="text" id="proj-title" placeholder="Ex: Dashboard Analytics" /></div>
+                <div class="form-group"><label>Categoria</label>
+                  <select id="proj-category" class="form-select">
+                    <option>Web App</option><option>API</option><option>Mobile</option><option>SaaS</option><option>E-commerce</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group"><label>Objetivo</label><input type="text" id="proj-objective" placeholder="O que esse projeto resolve?" /></div>
+              <div class="form-group"><label>Descrição</label><textarea id="proj-description" rows="3" placeholder="Descreva o projeto..."></textarea></div>
+              <div class="form-group">
+                <label>Stack / Linguagens</label>
+                <div class="tags-selector" id="tags-selector">
+                  <span class="tag-option" data-tag="React">React</span>
+                  <span class="tag-option" data-tag="Node.js">Node.js</span>
+                  <span class="tag-option" data-tag="Python">Python</span>
+                  <span class="tag-option" data-tag="TypeScript">TypeScript</span>
+                  <span class="tag-option" data-tag="PostgreSQL">PostgreSQL</span>
+                  <span class="tag-option" data-tag="Docker">Docker</span>
+                  <span class="tag-option" data-tag="Next.js">Next.js</span>
+                  <span class="tag-option" data-tag="MongoDB">MongoDB</span>
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group"><label>Nível</label>
+                  <select id="proj-level" class="form-select">
+                    <option>Iniciante</option><option>Intermediário</option><option>Avançado</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>Ideia principal</label><input type="text" id="proj-idea" placeholder="Resumo em uma frase" /></div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-outline" id="cancel-new-project">Cancelar</button>
+              <button class="btn-primary" id="confirm-new-project">Criar Projeto (+50 XP)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── MODAL VISUALIZAR PROJETO ── -->
+        <div class="modal-overlay hidden" id="view-project-modal">
+          <div class="modal-card modal-project-view">
+            <div class="modal-header">
+              <h3 id="vp-title">Projeto</h3>
+              <button class="modal-close" id="close-view-project-modal">✕</button>
+            </div>
+            <div class="project-view-layout">
+              <div class="project-file-tree" id="project-file-tree"></div>
+              <div class="project-code-view">
+                <div class="code-header"><span class="code-lang" id="vp-code-lang">index.js</span></div>
+                <pre class="code-block" id="vp-code"></pre>
+              </div>
+              <div class="project-info-panel" id="project-info-panel"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CHAT IA ── -->
+        <section class="page hidden" id="page-chat" data-page="chat">
+          <div class="chat-layout">
+            <div class="chat-history-panel">
+              <div class="chat-history-header">
+                <img src="logo.jpeg" alt="Hypatia" class="chat-logo" />
+                <span>Hypatia IA</span>
+              </div>
+              <button class="btn-new-chat" id="btn-new-chat">+ Nova conversa</button>
+              <div class="chat-history-list">
+                <div class="chat-history-item active">
+                  <span class="chi-icon">💬</span>
+                  <span class="chi-title">React Hooks explicados</span>
+                </div>
+                <div class="chat-history-item">
+                  <span class="chi-icon">💬</span>
+                  <span class="chi-title">Como estruturar uma API REST</span>
+                </div>
+                <div class="chat-history-item">
+                  <span class="chi-icon">💬</span>
+                  <span class="chi-title">Diferença SQL vs NoSQL</span>
+                </div>
+                <div class="chat-history-item">
+                  <span class="chi-icon">💬</span>
+                  <span class="chi-title">Carreira em Front-end 2025</span>
+                </div>
+                <div class="chat-history-item">
+                  <span class="chi-icon">💬</span>
+                  <span class="chi-title">Docker para iniciantes</span>
+                </div>
+              </div>
+            </div>
+            <div class="chat-main">
+              <div class="chat-messages" id="chat-messages">
+                <div class="chat-message ai-message">
+                  <div class="message-avatar"><img src="logo.jpeg" alt="Hypatia" /></div>
+                  <div class="message-bubble">
+                    <p data-i18n="chat_welcome_msg">Olá! Sou a Hypatia, sua mentora de programação. Como posso te ajudar hoje? Pode me perguntar sobre código, arquitetura, carreira ou qualquer dúvida técnica. 🚀</p>
+                    <span class="message-time">Agora</span>
+                  </div>
+                </div>
+              </div>
+              <div class="typing-indicator hidden" id="typing-indicator">
+                <div class="message-avatar small"><img src="logo.jpeg" alt="Hypatia" /></div>
+                <div class="typing-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>
+              </div>
+              <div class="chat-suggestions" id="chat-suggestions">
+                <button class="suggestion-chip" data-prompt="Como funciona o useEffect no React?">Como funciona o useEffect?</button>
+                <button class="suggestion-chip" data-prompt="Explique REST APIs com exemplos práticos">REST APIs na prática</button>
+                <button class="suggestion-chip" data-prompt="Qual a diferença entre SQL e NoSQL?">SQL vs NoSQL</button>
+                <button class="suggestion-chip" data-prompt="Como me preparar para entrevistas de dev?">Entrevistas de dev</button>
+              </div>
+              <div class="chat-input-area">
+                <div class="chat-input-wrapper">
+                  <textarea id="chat-input" class="chat-input" placeholder="Pergunte algo para a Hypatia..." rows="1" data-i18n-placeholder="chat_placeholder" aria-label="Mensagem"></textarea>
+                  <button class="btn-send" id="btn-send-chat" aria-label="Enviar mensagem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  </button>
+                </div>
+                <p class="chat-disclaimer" data-i18n="chat_disclaimer">Hypatia pode cometer erros. Verifique informações importantes.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── HACKATHONS ── -->
+        <section class="page hidden" id="page-hackathons" data-page="hackathons">
+          <div class="page-header-inner">
+            <div>
+              <h2 data-i18n="nav_hackathons">Hackathons</h2>
+              <p>Eventos tech em Salvador-BA e online. Desafie-se e acelere sua carreira.</p>
+            </div>
+            <div class="hackathon-filter-row">
+              <button class="filter-btn active" data-hfilter="all">Todos</button>
+              <button class="filter-btn" data-hfilter="presencial">Presencial</button>
+              <button class="filter-btn" data-hfilter="online">Online</button>
+              <button class="filter-btn" data-hfilter="ia">IA</button>
+            </div>
+          </div>
+          <div class="hackathons-list" id="hackathons-list">
+            <!-- Gerado via JS -->
+          </div>
+        </section>
+
+        <!-- ── MODAL HACKATHON ── -->
+        <div class="modal-overlay hidden" id="hackathon-modal">
+          <div class="modal-card modal-hackathon">
+            <div class="hackathon-modal-banner" id="hm-banner"></div>
+            <div class="hackathon-modal-body">
+              <button class="modal-close hm-close" id="close-hackathon-modal">✕</button>
+              <div class="hm-header">
+                <div>
+                  <h2 id="hm-title">Hackathon</h2>
+                  <div class="hm-meta" id="hm-meta"></div>
+                </div>
+                <button class="btn-primary hm-participate-btn" id="hm-participate-btn">Participar</button>
+              </div>
+              <div class="hm-grid">
+                <div class="hm-section"><h4>Sobre o Evento</h4><p id="hm-description"></p></div>
+                <div class="hm-section"><h4>Cronograma</h4><div id="hm-schedule"></div></div>
+                <div class="hm-section"><h4>Premiações</h4><div id="hm-prizes"></div></div>
+                <div class="hm-section"><h4>Regras</h4><ul id="hm-rules" class="hm-rules-list"></ul></div>
+                <div class="hm-section"><h4>Mentores</h4><div id="hm-mentors" class="hm-mentors-grid"></div></div>
+                <div class="hm-section"><h4>Localização</h4><p id="hm-location"></p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CONFIGURAÇÕES ── -->
+        <section class="page hidden" id="page-settings" data-page="settings">
+          <div class="page-header-inner"><h2 data-i18n="nav_settings">Configurações</h2></div>
+          <div class="settings-layout">
+            <div class="settings-card">
+              <h3 data-i18n="settings_profile">Perfil</h3>
+              <div class="settings-avatar-row">
+                <div class="settings-avatar" id="settings-avatar">AB</div>
+                <div>
+                  <p class="settings-avatar-name" id="settings-display-name">Usuário</p>
+                  <p class="settings-avatar-email" id="settings-display-email">usuario@email.com</p>
+                  <div class="settings-xp-badge" id="settings-xp-badge">⚡ 1250 XP · Nível 3</div>
+                </div>
+              </div>
+              <div class="form-group"><label for="settings-name" data-i18n="onboarding_name">Nome</label><input type="text" id="settings-name" /></div>
+              <div class="form-group"><label for="settings-email" data-i18n="onboarding_email">E-mail</label><input type="email" id="settings-email" /></div>
+              <button class="btn-primary" id="btn-save-settings" data-i18n="btn_save">Salvar alterações</button>
+              <div class="settings-save-feedback hidden" id="settings-save-feedback"><span>✅</span> <span data-i18n="settings_saved">Salvo com sucesso!</span></div>
+            </div>
+            <div class="settings-card">
+              <h3 data-i18n="settings_preferences">Preferências</h3>
+              <div class="settings-row">
+                <div><span class="settings-label" data-i18n="settings_theme">Tema</span><span class="settings-sublabel" data-i18n="settings_theme_desc">Claro ou escuro</span></div>
+                <button class="theme-toggle-inline" id="settings-theme-toggle"><span id="settings-theme-label" data-i18n="theme_light">Claro</span></button>
+              </div>
+              <div class="settings-row">
+                <div><span class="settings-label" data-i18n="settings_lang">Idioma</span><span class="settings-sublabel" data-i18n="settings_lang_desc">PT-BR ou EN</span></div>
+                <button class="lang-toggle-inline" id="settings-lang-toggle"><span id="settings-lang-label">PT-BR</span></button>
+              </div>
+              <div class="settings-row">
+                <div><span class="settings-label" data-i18n="settings_notifications">Notificações</span><span class="settings-sublabel" data-i18n="settings_notifications_desc">Alertas de progresso</span></div>
+                <label class="toggle-switch"><input type="checkbox" checked id="toggle-notifications" /><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+            <div class="settings-card settings-danger">
+              <h3 data-i18n="settings_account">Conta</h3>
+              <div class="settings-row">
+                <div><span class="settings-label" data-i18n="settings_plan">Plano atual</span><span class="settings-sublabel">Pro — R$ 49/mês</span></div>
+                <button class="btn-outline btn-sm" data-i18n="btn_manage">Gerenciar</button>
+              </div>
+              <div class="settings-row">
+                <div><span class="settings-label" data-i18n="settings_member_since">Membro desde</span><span class="settings-sublabel" id="member-since">—</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── COMMUNITY ── -->
+        <section class="page hidden" id="page-community" data-page="community">
+          <div class="page-header-inner">
+            <div>
+              <h2 data-i18n="nav_community">Comunidade</h2>
+              <p>Conecte-se, compita e evolua com outros desenvolvedores da Hypatia.</p>
+            </div>
+          </div>
+
+          <div class="community-layout">
+            <div class="community-sidebar">
+              <div class="community-card ranking-card">
+                <div class="community-card-header">
+                  <h3 data-i18n="comm_ranking">Ranking Global</h3>
+                  <span class="badge-online">Ao Vivo</span>
+                </div>
+                <div id="ranking-list" class="ranking-list"></div>
+              </div>
+
+              <div class="community-card levels-card">
+                <div class="community-card-header">
+                  <h3 data-i18n="comm_levels">Sua Liga</h3>
+                </div>
+                <div class="league-info">
+                  <div class="league-badge">💎</div>
+                  <div class="league-text">
+                    <h4 id="current-league">Liga de Diamante</h4>
+                    <p>Você está no top 5% esta semana!</p>
+                  </div>
+                </div>
+                <div class="xp-bar-full" style="margin-top: 1rem;">
+                  <div id="league-progress-fill" class="xp-bar-fill" style="width: 85%;"></div>
+                </div>
+                <p class="xp-next-level">Faltam 240 XP para a próxima liga</p>
+              </div>
+            </div>
+
+            <div class="community-main">
+              <div class="community-card feed-card">
+                <div class="community-card-header">
+                  <h3 data-i18n="comm_feed">Feed da Comunidade</h3>
+                </div>
+                <div id="community-feed" class="community-feed"></div>
+              </div>
+
+              <div class="community-card members-card">
+                <div class="community-card-header">
+                  <h3 data-i18n="comm_active_members">Membros Ativos</h3>
+                  <button class="btn-outline btn-sm">Ver todos</button>
+                </div>
+                <div id="active-members-grid" class="active-members-grid"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── SUPORTE ── -->
+        <section class="page hidden" id="page-support" data-page="support">
+          <div class="page-header-inner"><h2 data-i18n="nav_support">Suporte</h2><p data-i18n="support_subtitle">Estamos aqui para ajudar. Descreva sua dúvida ou problema.</p></div>
+          <div class="support-layout">
+            <div class="support-form-card">
+              <h3 data-i18n="support_send_msg">Enviar mensagem</h3>
+              <div class="form-group"><label for="support-subject" data-i18n="support_subject">Assunto</label><input type="text" id="support-subject" placeholder="Ex: Problema no acesso ao curso" /></div>
+              <div class="form-group"><label for="support-message" data-i18n="support_message">Mensagem</label><textarea id="support-message" rows="6" placeholder="Descreva detalhadamente sua dúvida..."></textarea></div>
+              <button class="btn-primary" id="btn-send-support" data-i18n="btn_send_support">Enviar mensagem</button>
+              <div class="support-feedback hidden" id="support-feedback">
+                <div class="feedback-success"><span>✅</span><div><strong data-i18n="support_success_title">Mensagem enviada!</strong><p data-i18n="support_success_desc">Nossa equipe responderá em até 24 horas.</p></div></div>
+              </div>
+            </div>
+            <div class="support-faq-card">
+              <h3 data-i18n="support_faq">Perguntas frequentes</h3>
+              <div class="faq-list">
+                <div class="faq-item"><button class="faq-question" data-i18n="faq_1_q">Como cancelar minha assinatura?</button><div class="faq-answer" data-i18n="faq_1_a">Acesse Configurações → Conta → Gerenciar plano e clique em "Cancelar assinatura".</div></div>
+                <div class="faq-item"><button class="faq-question" data-i18n="faq_2_q">Posso usar offline?</button><div class="faq-answer" data-i18n="faq_2_a">Algumas aulas ficam disponíveis offline após download. O chat com IA requer conexão.</div></div>
+                <div class="faq-item"><button class="faq-question" data-i18n="faq_3_q">Como redefinir minha senha?</button><div class="faq-answer" data-i18n="faq_3_a">Na tela de login, clique em "Esqueci minha senha" e siga as instruções por e-mail.</div></div>
+                <div class="faq-item"><button class="faq-question">Como ganhar XP?</button><div class="faq-answer">Conclua aulas (+25 XP), abra projetos (+50 XP), use o chat IA (+10 XP) e participe de hackathons (+100 XP).</div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ===== BOTTOM NAV (Mobile) ===== -->
+    <nav class="bottom-nav" role="navigation" aria-label="Navegação mobile">
+      <button class="bottom-nav-item active" data-page="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="nav_dashboard">Dashboard</span></button>
+      <button class="bottom-nav-item" data-page="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span data-i18n="nav_learn">Aprender</span></button>
+      <button class="bottom-nav-item bottom-nav-chat" data-page="chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span data-i18n="nav_chat">Chat</span></button>
+      <button class="bottom-nav-item" data-page="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg><span data-i18n="nav_projects">Projetos</span></button>
+      <button class="bottom-nav-item" data-page="hackathons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Hacks</span></button>
+      <button class="bottom-nav-item" data-page="community"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="nav_community">Comu</span></button>
+    </nav>
+
+  </div><!-- end #app -->
+
+  <script src="script.js"></script>
+</body>
+</html>
